@@ -76,19 +76,23 @@ def inicial(request):
 @csrf_exempt
 def adicionar_usuario(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        nome = data.get('nome').strip()
-        senha = data.get('senha')
-
-        if nome and senha:
-            if User.objects.filter(username=nome).exists():
-                return JsonResponse({'success': False, 'msg': 'Usuário já existe'}, status=400)
-
+        try:
+            data = json.loads(request.body)
+            nome = data.get('nome', '').strip()
+            senha = data.get('senha', '').strip()
+            if not nome or not senha:
+                return JsonResponse({'success': False, 'msg': 'Preencha todos os campos!'}, status=400)
+            
+            if User.objects.filter(username__iexact=nome).exists():
+                return JsonResponse({'success': False, 'msg': f"O usuário '{nome}' já existe!"}, status=400)
             user = User.objects.create_user(username=nome, password=senha)
-            SenhaUsuario.objects.create(usuario=user, senha_plana=senha)
-            return JsonResponse({'success': True, 'msg': 'Usuário criado com sucesso'})
 
-        return JsonResponse({'success': False, 'msg': 'Dados incompletos'}, status=400)
+            SenhaUsuario.objects.create(usuario=user, senha_plana=senha)
+            return JsonResponse({'success': True, 'msg': f"Usuário '{nome}' criado com sucesso!"})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'msg': 'Erro ao interpretar os dados enviados!'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'msg': f'Erro interno: {str(e)}'}, status=500)
 
     return JsonResponse({'success': False, 'msg': 'Método não permitido'}, status=405)
 
