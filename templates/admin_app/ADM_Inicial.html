@@ -1,0 +1,63 @@
+{% load static %}
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADM - SAMU 192</title>
+    <link rel="stylesheet" href="{% static 'css/adm.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        const csrftoken = '{{ csrf_token }}';
+    </script>
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="logo-box">
+            <img src="{% static 'img/SAMU.png' %}" alt="Logo SAMU">
+        </div>
+    </div>
+
+    <div class="menu-bar">
+        <div class="welcome-text">Seja Bem Vindo,<br><strong><span id="usr_name">{{ usr_name }}</span></strong>!</div>
+    </div>
+    <div>
+</div>
+
+    <div class="card-container">
+
+        <div class="card">
+            <img src="{% static 'img/image.png' %}" alt="Adicionar usuário">
+            <p>Adicionar<br>novo usuário</p>
+        </div>
+        <a href="{% url 'lista_usuarios' %}" class="card-link">
+            <div class="card">
+                <img src="{% static 'img/geren.png' %}" alt="Gerenciar usuários">
+                <p>Gerenciar<br>usuário</p>
+            </div>
+        </a>
+        <a href="{% url 'logout' %}" class="card-link">
+            <div class="card">
+                <img src="{% static 'img/sair.png' %}" alt="Sair">
+                <p>SAIR</p>
+            </div>
+        </a>
+    </div>
+
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="fechar-box">
+                <span class="fechar" onclick="fecharModal()">&times;</span>
+            </div>
+            <h2>Novo Usuário</h2>
+            <input type="text" placeholder="Nome do usuário:" />
+            <input type="password" placeholder="Senha:" />
+            <button class="add-btn">Adicionar</button>
+        </div>
+    </div>
+    
+    <script src="{% static 'js/adm.js' %}"></script>
+</body>
+<div id="mensagem" style="display:none; padding: 10px; margin: 10px 20px;" class="mensagem-sucesso"></div>
+</html>

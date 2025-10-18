@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesquisa - SAMU 192</title>
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="{% static 'css/pesquisa.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <!-- Topo -->
+    <div class="top-bar">
+        <div class="logo-box">
+            <a href="{% url 'inicio' %}">
+                <img src="{% static 'img/SAMU.png' %}" alt="Logo SAMU">
+            </a>
+        </div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="container">
+        <h2>Resultado da Busca</h2>
+
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Nome do Paciente</th>
+                    <th>Data</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if resultados %}
+                    {% for arquivo in resultados %}
+                        <tr>
+                            <td>{{ arquivo.nome_paciente }}</td>
+                            <td>{{ arquivo.data_arquivo|date:"d/m/Y" }}</td>
+                            <td>
+                                <!-- Ver Documento -->
+                                <a href="{% url 'ver_documento' arquivo.id %}" class="view-btn">Ver Documento</a>
+
+                                <!-- Baixar -->
+                                <a href="{% url 'baixar_arquivo' arquivo.id %}" class="download">Baixar</a>
+
+                                <!-- Excluir -->
+                                <form id="form-excluir-{{ arquivo.id }}" action="{% url 'excluir_arquivo' arquivo.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="button" class="delete-btn" onclick="confirmarExclusao({{ arquivo.id }})">Excluir</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3">Nenhum resultado encontrado.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function confirmarExclusao(id) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Você não poderá reverter isso!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#4CAF50',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`form-excluir-${id}`).submit();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

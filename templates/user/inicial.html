@@ -1,0 +1,101 @@
+{% load static %}
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inicio - SAMU 192</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'static/img/favicon.png' %}">
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="logo-box">
+            <img src="{% static 'img/SAMU.png' %}" alt="Logo SAMU">
+        </div>
+        <div class="welcome-text">Seja Bem Vindo,<br><strong><span id="usr_name">{{ usr_name }}</span></strong>!</div>
+    </div>
+
+    <div class="menu-bar">
+        <div class="menu-item" onclick="abrirModal()">
+            <img src="{% static 'img/doc.png' %}" alt="Adicionar">
+            <span>Adicionar<br>arquivo</span>
+        </div>
+        <div class="menu-item" onclick="abrirModalPesquisar()">
+            <img src="{% static 'img/pesquisar_doc.png' %}" alt="Pesquisar">
+            <span>Pesquisar<br>arquivo</span>
+        </div>
+        <a href="{% url 'logout' %}" class="card-link">
+            <div class="menu-item">
+                <img src="{% static 'img/sair.png' %}" alt="Sair">
+                <span>SAIR</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="carousel">
+        <div class="carousel-track">
+
+            <div class="carousel-slide">
+                <img src="{% static 'img/carr_04.jpeg' %}" alt="Imagem 4">
+            </div>
+            <div class="carousel-slide">
+                <img src="{% static 'img/carr_05.jpeg' %}" alt="Imagem 5">
+            </div>
+            <div class="carousel-slide">
+                <img src="{% static 'img/carr_06.jpeg' %}" alt="Imagem 6">
+            </div>
+            <div class="carousel-slide">
+                <img src="{% static 'img/carr_07.jpeg' %}" alt="Imagem 7">
+            </div>
+            <div class="carousel-slide">
+                <img src="{% static 'img/carr_08.jpeg' %}" alt="Imagem 8">
+            </div>
+            <div class="carousel-slide">
+                <img src="{% static 'img/carr_09.jpeg' %}" alt="Imagem 9">
+            </div>
+            <div class="carousel-slide">
+                <img src="{% static 'img/carr_10.jpeg' %}" alt="Imagem 10">
+        </div>
+    </div>
+
+    <div id="modalAdicionar" class="modal">
+        <div class="modal-conteudo">
+            <div class="fechar-box">
+                <span class="fechar" onclick="fecharModal()">&times;</span>
+            </div>
+            <h2>Adicionar arquivo:</h2>
+
+            <input type="text" class="input-modal" id="nomePaciente" placeholder="Nome do Paciente:" />
+            <input type="date" class="input-modal" id="dataArquivo" placeholder="Data do Arquivo:" />
+
+            <div class="upload-box">
+                <label for="arquivoInput" class="upload-label">
+                    <img class="upload-icon" src="{% static 'img/add_doc.png' %}" alt="Upload/Scanner" />
+                    <span>Upload/<br>Scanner</span>
+                </label>
+                <input type="file" id="arquivoInput" name="arquivo" style="display: none;" />
+                <p id="nomeArquivoSelecionado" class="nome-arquivo">Nenhum arquivo selecionado</p>
+            </div>
+
+            <button class="btn-adicionar">Adicionar</button>
+        </div>
+    </div>
+
+    <div id="modalPesquisar" class="modal">
+        <div class="modal-conteudo">
+            <div class="fechar-box">
+                <span class="fechar" onclick="fecharModal()">&times;</span>
+            </div>
+            <h2>Pesquisar Arquivo:</h2>
+            <input type="text" id="pesquisarNomePaciente" class="input-modal" placeholder="Nome do Paciente:" />
+            <input type="date" id="pesquisarDataArquivo" class="input-modal" placeholder="Data do Arquivo:" />
+            <button class="btn-adicionar" onclick="pesquisarArquivo()">Buscar</button>
+        </div>
+    </div>
+
+    <script src="{% static 'js/inicial.js' %}"></script>
+</body>
+<div id="mensagem" style="display:none; padding: 10px; margin: 10px 20px;" class="mensagem-sucesso"></div>
+</html>

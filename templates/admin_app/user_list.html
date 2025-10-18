@@ -1,0 +1,105 @@
+{% load static %}
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista - SAMU 192</title>
+    <link rel="stylesheet" href="{% static 'css/user.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-cancel {
+            background-color: #4CAF50 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 5px;
+            padding: 8px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="logo-box">
+            <a href="{% url 'ADM_inicial' %}">
+                <img src="{% static 'img/SAMU.png' %}" alt="Logo SAMU">
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Lista de Usuários</h2>
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.username }}</td>
+                    <td>
+                        <button class="view-btn" onclick="abrirModalVerDados('{{ usuario.username }}')">Ver Dados</button>
+                        <button type="button" class="delete-btn" onclick="confirmarExclusao('{{ usuario.id }}')">Excluir</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- MODAL COM ESTILO COPIADO DO INICIAL -->
+    <div id="modalVerDados" class="modal">
+    <div class="modal-conteudo">
+        <div class="fechar-box">
+            <span class="fechar" onclick="fecharModalVerDados()">&times;</span>
+        </div>
+        <h2>Dados do Usuário:</h2>
+
+        <p><strong>Usuário:</strong> <span id="verNome"></span></p>
+
+        <input type="text" id="redefinirSenha" class="input-modal" placeholder="Redefinir senha:" />
+        <button class="btn-adicionar" onclick="redefinirSenha()">Redefinir</button>
+    </div>
+</div>
+
+
+    <script src="{% static 'js/user.js' %}"></script>
+
+    <script>
+        function confirmarExclusao(usuarioId) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Essa ação não pode ser desfeita.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#d33',
+                customClass: {
+                    cancelButton: 'swal2-cancel',
+                    confirmButton: 'swal2-confirm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/excluir-usuario/${usuarioId}/`;
+
+                    const csrfToken = '{{ csrf_token }}';
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken;
+                    form.appendChild(csrfInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

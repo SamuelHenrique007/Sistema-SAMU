@@ -1,0 +1,173 @@
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #fff;
+}
+
+.top-bar {
+    background-color: #f26522;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    color: white;
+}
+
+.logo-box img {
+    width: 150px;
+    height: 80px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.container {
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #333;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.user-table th,
+.user-table td {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 15px;
+}
+
+.user-table th {
+    background-color: #f26522;
+    color: white;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+.user-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.user-table tbody tr:hover {
+    background-color: #fef0e6;
+    transition: background 0.3s ease;
+}
+
+.user-table td {
+    border-bottom: 1px solid #eee;
+}
+
+.user-table td:last-child {
+    text-align: center;
+}
+
+.view-btn,
+.delete-btn {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.view-btn {
+    background-color: #f26522;
+}
+
+.delete-btn {
+    background-color: #f26522;
+}
+
+.view-btn:hover,
+.delete-btn:hover {
+    background-color: #e15510;
+}
+
+/* === ESTILO DO MODAL (COPIADO DO INICIAL) === */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-conteudo {
+    background-color: white;
+    width: 300px;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px auto;
+    position: relative;
+}
+
+.modal-conteudo h2 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.input-modal {
+    width: 90%;
+    max-width: 260px;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-adicionar {
+    width: 90%;
+    max-width: 260px;
+    padding: 10px;
+    background-color: #f26522;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-adicionar:hover {
+    background-color: #e15510;
+}
+
+.fechar {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #444;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.fechar:hover {
+    color: red;
+}
