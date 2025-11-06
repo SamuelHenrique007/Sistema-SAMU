@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden, FileResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from mimetypes import guess_type
 from .forms import ArquivoForm
@@ -73,15 +72,17 @@ def inicial(request):
 
 # ==================== ARQUIVOS ====================
 
-@csrf_exempt
+@login_required
+@require_POST
 def adicionar_arquivo(request):
-    if request.method == 'POST':
-        form = ArquivoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'mensagem': 'Arquivo adicionado com sucesso!'})
-        return JsonResponse({'erro': form.errors}, status=400)
-    return JsonResponse({'erro': 'Método inválido'}, status=405)
+    if not request.user.is_staff:
+        return JsonResponse({'erro': 'Acesso negado.'}, status=403)
+
+    form = ArquivoForm(request.POST, request.FILES)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({'mensagem': 'Arquivo adicionado com sucesso!'})
+    return JsonResponse({'erro': form.errors}, status=400)
 
 @login_required
 def pesquisar(request):
