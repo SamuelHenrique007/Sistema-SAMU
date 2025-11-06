@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden, FileResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from mimetypes import guess_type
 from .forms import ArquivoForm
@@ -73,18 +72,23 @@ def inicial(request):
 
 # ==================== ARQUIVOS ====================
 
-@csrf_exempt
+@login_required
+@require_POST
 def adicionar_arquivo(request):
-    if request.method == 'POST':
-        form = ArquivoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'mensagem': 'Arquivo adicionado com sucesso!'})
-        return JsonResponse({'erro': form.errors}, status=400)
-    return JsonResponse({'erro': 'Método inválido'}, status=405)
+    if not request.user.is_staff:
+        return JsonResponse({'erro': 'Acesso negado.'}, status=403)
+
+    form = ArquivoForm(request.POST, request.FILES)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({'mensagem': 'Arquivo adicionado com sucesso!'})
+    return JsonResponse({'erro': form.errors}, status=400)
 
 @login_required
 def pesquisar(request):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Acesso negado")
+
     nome = request.GET.get('nome_paciente', '')
     data = request.GET.get('data_arquivo', '')
 
@@ -98,6 +102,9 @@ def pesquisar(request):
 
 @login_required
 def ver_documento(request, arquivo_id):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Acesso negado")
+
     try:
         arquivo = Arquivo.objects.get(id=arquivo_id)
         file_path = arquivo.arquivo.path
@@ -113,6 +120,9 @@ def ver_documento(request, arquivo_id):
 
 @login_required
 def baixar_arquivo(request, id):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Acesso negado")
+
     try:
         arquivo = Arquivo.objects.get(pk=id)
         return FileResponse(arquivo.arquivo.open('rb'), as_attachment=True)
@@ -122,6 +132,9 @@ def baixar_arquivo(request, id):
 @login_required
 @require_POST
 def excluir_arquivo(request, id):
+    if not request.user.is_staff:
+        return JsonResponse({'erro': 'Acesso negado.'}, status=403)
+
     arquivo = get_object_or_404(Arquivo, id=id)
     arquivo.delete()
 

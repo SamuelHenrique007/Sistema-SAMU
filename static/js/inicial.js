@@ -1,3 +1,30 @@
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return parts.pop().split(';').shift();
+    }
+    return null;
+}
+
+function getCsrfToken() {
+    return getCookie('csrftoken') || window.csrftoken || '';
+}
+
+async function parseJsonResponse(response) {
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(text || 'Resposta inesperada do servidor.');
+    }
+
+    try {
+        return await response.json();
+    } catch (error) {
+        throw new Error('Erro ao interpretar a resposta do servidor.');
+    }
+}
+
 function sair() {
     mostrarMensagem("Saindo do sistema...", "sucesso");
 }
@@ -77,12 +104,21 @@ async function adicionarArquivo() {
     formData.append("arquivo", arquivoInput.files[0]);
 
     try {
+        const csrfToken = getCsrfToken();
+        if (!csrfToken) {
+            throw new Error('Não foi possível validar sua sessão. Recarregue a página e tente novamente.');
+        }
+
         const response = await fetch("/adicionar/", {
             method: "POST",
             body: formData,
+            credentials: 'same-origin',
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
         });
 
-        const result = await response.json();
+        const result = await parseJsonResponse(response);
 
         if (response.ok && !result.erro) {
             mostrarMensagem(result.mensagem || "Arquivo adicionado com sucesso!", "sucesso");
@@ -94,10 +130,11 @@ async function adicionarArquivo() {
             arquivoInput.value = "";
             document.getElementById("nomeArquivoSelecionado").textContent = "Nenhum arquivo selecionado";
         } else {
-            mostrarMensagem(result.mensagem || "Erro ao adicionar o arquivo.", "erro");
+            const mensagemErro = result.mensagem || result.msg || result.erro || "Erro ao adicionar o arquivo.";
+            mostrarMensagem(mensagemErro, "erro");
         }
     } catch (err) {
-        mostrarMensagem("Erro ao enviar: " + err.message, "erro");
+        mostrarMensagem("Erro ao enviar: " + (err.message || err), "erro");
     }
 }
 

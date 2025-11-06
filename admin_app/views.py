@@ -4,11 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
 
-from .models import SenhaUsuario
+from django.utils.translation import gettext_lazy as _
 
 # ==================== TELAS ====================
 
@@ -73,38 +72,41 @@ def inicial(request):
 
 # ==================== USUÁRIOS ====================
 
-@csrf_exempt
+@login_required
+@require_POST
 def adicionar_usuario(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            nome = data.get('nome', '').strip()
-            senha = data.get('senha', '').strip()
-            if not nome or not senha:
-                return JsonResponse({'success': False, 'msg': 'Preencha todos os campos!'}, status=400)
-            
-            if User.objects.filter(username__iexact=nome).exists():
-                return JsonResponse({'success': False, 'msg': f"O usuário '{nome}' já existe!"}, status=400)
-            user = User.objects.create_user(username=nome, password=senha)
+    if not request.user.is_staff:
+        return JsonResponse({'success': False, 'msg': _('Acesso negado.')}, status=403)
 
-            SenhaUsuario.objects.create(usuario=user, senha_plana=senha)
-            return JsonResponse({'success': True, 'msg': f"Usuário '{nome}' criado com sucesso!"})
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'msg': 'Erro ao interpretar os dados enviados!'}, status=400)
-        except Exception as e:
-            return JsonResponse({'success': False, 'msg': f'Erro interno: {str(e)}'}, status=500)
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'msg': _('Erro ao interpretar os dados enviados!')}, status=400)
 
-    return JsonResponse({'success': False, 'msg': 'Método não permitido'}, status=405)
+    nome = data.get('nome', '').strip()
+    senha = data.get('senha', '').strip()
+
+    if not nome or not senha:
+        return JsonResponse({'success': False, 'msg': _('Preencha todos os campos!')}, status=400)
+
+    if User.objects.filter(username__iexact=nome).exists():
+        return JsonResponse({'success': False, 'msg': _("O usuário '{name}' já existe!").format(name=nome)}, status=400)
+
+    try:
+        User.objects.create_user(username=nome, password=senha)
+    except Exception:
+        return JsonResponse({'success': False, 'msg': _('Erro ao criar usuário.')}, status=500)
+
+    return JsonResponse({'success': True, 'msg': _("Usuário '{name}' criado com sucesso!").format(name=nome)})
 
 @login_required
 def lista_usuarios(request):
     usuarios = User.objects.filter(is_superuser=False, is_staff=False)
-    for user in usuarios:
-        user.senha_plana = None
 
     return render(request, 'admin_app/user_list.html', {'usuarios': usuarios})
 
 @login_required
+@require_POST
 def excluir_usuario(request, usuario_id):
     if not request.user.is_staff:
         return HttpResponseForbidden("Acesso negado")
@@ -113,44 +115,54 @@ def excluir_usuario(request, usuario_id):
     usuario.delete()
     return redirect('lista_usuarios')
 
+@login_required
 @require_POST
-@csrf_exempt
 def deletar_usuario(request):
-    data = json.loads(request.body)
-    nome = data.get('nome')
+    if not request.user.is_staff:
+        return JsonResponse({'success': False, 'msg': _('Acesso negado.')}, status=403)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'msg': _('Erro ao interpretar os dados enviados!')}, status=400)
+
+    nome = data.get('nome', '').strip()
+    if not nome:
+        return JsonResponse({'success': False, 'msg': _('Informe o nome do usuário.')}, status=400)
 
     try:
         user = User.objects.get(username=nome)
-        user.delete()
-        return JsonResponse({'success': True, 'msg': 'Usuário excluído com sucesso'})
     except User.DoesNotExist:
-        return JsonResponse({'success': False, 'msg': 'Usuário não encontrado'})
+        return JsonResponse({'success': False, 'msg': _('Usuário não encontrado')}, status=404)
+
+    user.delete()
+    return JsonResponse({'success': True, 'msg': _('Usuário excluído com sucesso')})
 
 
 
-@csrf_exempt
 @login_required
+@require_POST
 def redefinir_senha(request):
     if not request.user.is_staff:
-        return HttpResponseForbidden("Acesso negado")
+        return JsonResponse({'success': False, 'msg': _('Acesso negado.')}, status=403)
 
-    if request.method == 'POST':
+    try:
         data = json.loads(request.body)
-        nome = data.get('nome')
-        nova_senha = data.get('nova_senha')
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'msg': _('Erro ao interpretar os dados enviados!')}, status=400)
 
-        try:
-            usuario = User.objects.get(username=nome)
-            usuario.set_password(nova_senha)
-            usuario.save()
+    nome = data.get('nome', '').strip()
+    nova_senha = data.get('nova_senha', '').strip()
 
-            SenhaUsuario.objects.update_or_create(
-                usuario=usuario,
-                defaults={'senha_plana': nova_senha}
-            )
+    if not nome or not nova_senha:
+        return JsonResponse({'success': False, 'msg': _('Preencha todos os campos!')}, status=400)
 
-            return JsonResponse({'success': True, 'msg': f'Senha de {nome} redefinida com sucesso!'})
-        except User.DoesNotExist:
-            return JsonResponse({'success': False, 'msg': 'Usuário não encontrado.'}, status=404)
+    try:
+        usuario = User.objects.get(username=nome)
+    except User.DoesNotExist:
+        return JsonResponse({'success': False, 'msg': _('Usuário não encontrado.')}, status=404)
 
-    return JsonResponse({'success': False, 'msg': 'Método não permitido.'}, status=405)
+    usuario.set_password(nova_senha)
+    usuario.save()
+
+    return JsonResponse({'success': True, 'msg': _('Senha de {name} redefinida com sucesso!').format(name=nome)})
