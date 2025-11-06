@@ -1,0 +1,129 @@
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #fff;
+}
+
+.top-bar {
+    background-color: #f26522;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    color: white;
+}
+
+.logo-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-box img {
+    width: 150px;
+    height: 80px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.container {
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #333;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Cabeçalho */
+.user-table th {
+    background-color: #f26522;
+    color: white;
+    padding: 14px 15px;
+    text-align: center;
+    /* centraliza os títulos */
+    font-weight: bold;
+}
+
+/* Células */
+.user-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    /* centraliza os dados e botões */
+}
+
+/* Última linha sem borda */
+.user-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Efeito hover */
+.user-table tbody tr:hover {
+    background-color: #fef3eb;
+}
+
+
+.download,
+.view-btn,
+.delete-btn {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.view-btn {
+    background-color: #f26522;
+}
+
+.delete-btn {
+    background-color: #f26522;
+}
+
+.download {
+    background-color: #f26522;
+}
+
+.view-btn:hover {
+    background-color: #e15510;
+}
+
+.delete-btn:hover {
+    background-color: #e15510;
+}
+
+.download:hover {
+    background-color: #e15510;
+}
+
+a.view-btn,
+a.download {
+    text-decoration: none !important;
+    color: white !important;
+    background-color: #f26522;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+a.view-btn:hover,
+a.download:hover {
+    background-color: #e15510;
+}
