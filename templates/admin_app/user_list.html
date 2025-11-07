@@ -44,7 +44,7 @@
                 <tr>
                     <td>{{ usuario.username }}</td>
                     <td>
-                        <button class="view-btn" onclick="abrirModalVerDados('{{ usuario.username }}')">Ver Dados</button>
+                        <button class="view-btn" onclick="abrirModalVerDados('{{ usuario.username }}')">Redefinir Senha</button>
                         <button type="button" class="delete-btn" onclick="confirmarExclusao('{{ usuario.id }}')">Excluir</button>
                     </td>
                 </tr>
@@ -58,7 +58,7 @@
         <div class="fechar-box">
             <span class="fechar" onclick="fecharModalVerDados()">&times;</span>
         </div>
-        <h2>Dados do Usuário:</h2>
+        <h2>Redefinir Senha:</h2>
 
         <p><strong>Usuário:</strong> <span id="verNome"></span></p>
 
