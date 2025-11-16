@@ -12,7 +12,7 @@ from .models import Arquivo
 # ==================== TELAS ====================
 
 def Login(request):
-    return render(request, 'samu/Login.html')
+    return render(request, 'samu/login.html')
 
 def user(request):
     return render(request, 'samu/user_list.html')
@@ -27,12 +27,12 @@ def fazer_login(request):
 
         if user is not None:
             login(request, user)
-            return redirect('adm' if user.is_staff else 'inicio')
+            return redirect('admin_app:adm' if user.is_staff else 'inicio')
         else:
             messages.error(request, 'Usuário ou senha inválidos.')
             return redirect('login')
 
-    return render(request, 'Login.html')
+    return render(request, 'login.html')
 
 def sair(request):
     logout(request)
@@ -44,31 +44,31 @@ def sair(request):
 def dashboard_admin(request):
     if not request.user.is_staff:
         return HttpResponseForbidden("Acesso negado")
-    return render(request, 'admin_app/ADM_inicial.html')
+    return render(request, 'admin_app/dashboard_adm.html')
 
 @login_required
 def dashboard_usuario(request):
-    return render(request, 'user/inicial.html')
+    return render(request, 'user/dashboard_user.html')
 
 @login_required
 def adm_painel(request):
     nome_usuario = request.user.get_full_name() or request.user.username
-    return render(request, 'admin_app/ADM_inicial.html', {'usr_name': nome_usuario})
+    return render(request, 'admin_app/dashboard_adm.html', {'usr_name': nome_usuario})
 
 @login_required
 def inicial_painel(request):
     nome_usuario = request.user.get_full_name() or request.user.username
-    return render(request, 'user/inicial.html', {'usr_name': nome_usuario})
+    return render(request, 'user/dashboard_user.html', {'usr_name': nome_usuario})
 
 @login_required
 def adm_inicial(request):
     nome_usuario = request.user.get_full_name() or request.user.username
-    return render(request, 'admin_app/adm_inicial.html', {'usr_name': nome_usuario})
+    return render(request, 'admin_app/dashboard_adm.html', {'usr_name': nome_usuario})
 
 @login_required
 def inicial(request):
     nome_usuario = request.user.get_full_name() or request.user.username
-    return render(request, 'user/inicial.html', {'usr_name': nome_usuario})
+    return render(request, 'user/dashboard_user.html', {'usr_name': nome_usuario})
 
 
 # ==================== ARQUIVOS ====================

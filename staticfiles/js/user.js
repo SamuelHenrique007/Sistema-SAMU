@@ -4,7 +4,6 @@ function abrirModalVerDados(nome) {
     console.log("Abrindo modal de:", nome);
     console.log(document.getElementById("verNome"));
     document.getElementById("verNome").textContent = nome;
-    //document.getElementById("verEmail").textContent = "••••••"; // apenas máscara
     document.getElementById("modalVerDados").style.display = "block";
 }
 
@@ -46,7 +45,7 @@ function redefinirSenha() {
         cancelButtonColor: "#d33"
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch("/redefinir-senha/", {
+            fetch("/adm/redefinir-senha/", {   // 👈 URL corrigida
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

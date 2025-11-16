@@ -1,15 +1,19 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SAMU 192</title>
+    <title>SAMU 192 - Usuários</title>
+
+    <!-- Estilos -->
     <link rel="stylesheet" href="{% static 'css/user.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
 
-
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         .swal2-cancel {
             background-color: #4CAF50 !important;
@@ -24,7 +28,7 @@
 <body>
     <div class="top-bar">
         <div class="logo-box">
-            <a href="{% url 'ADM_inicial' %}">
+            <a href="{% url 'admin_app:adm_inicial' %}">
                 <img src="{% static 'img/SAMU.png' %}" alt="Logo SAMU">
             </a>
         </div>
@@ -52,24 +56,26 @@
             </tbody>
         </table>
     </div>
-    <!-- MODAL COM ESTILO COPIADO DO INICIAL -->
+
+    <!-- Modal de Redefinir senha -->
     <div id="modalVerDados" class="modal">
-    <div class="modal-conteudo">
-        <div class="fechar-box">
-            <span class="fechar" onclick="fecharModalVerDados()">&times;</span>
+        <div class="modal-conteudo">
+            <div class="fechar-box">
+                <span class="fechar" onclick="fecharModalVerDados()">&times;</span>
+            </div>
+            <h2>Redefinir Senha:</h2>
+
+            <p><strong>Usuário:</strong> <span id="verNome"></span></p>
+
+            <input type="password" id="redefinirSenha" class="input-modal" placeholder="Redefinir senha:" />
+            <button class="btn-adicionar" onclick="redefinirSenha()">Redefinir</button>
         </div>
-        <h2>Redefinir Senha:</h2>
-
-        <p><strong>Usuário:</strong> <span id="verNome"></span></p>
-
-        <input type="text" id="redefinirSenha" class="input-modal" placeholder="Redefinir senha:" />
-        <button class="btn-adicionar" onclick="redefinirSenha()">Redefinir</button>
     </div>
-</div>
 
-
+    <!-- JS externo -->
     <script src="{% static 'js/user.js' %}"></script>
 
+    <!-- Script de exclusão -->
     <script>
         function confirmarExclusao(usuarioId) {
             Swal.fire({
@@ -88,7 +94,7 @@
                 if (result.isConfirmed) {
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/excluir-usuario/${usuarioId}/`;
+                    form.action = `/adm/excluir-usuario/${usuarioId}/`;  // URL corrigida
 
                     const csrfToken = '{{ csrf_token }}';
                     const csrfInput = document.createElement('input');

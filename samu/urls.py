@@ -6,10 +6,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-
+    # Rotas da parte do usuário
     path('', include('user.urls')),
 
-    path('', include('admin_app.urls')),
+    # Rotas da parte admin da sua app
+    path('adm/', include(('admin_app.urls', 'admin_app'), namespace='admin_app')),
 ]
 
 if settings.DEBUG:

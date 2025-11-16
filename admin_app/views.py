@@ -10,30 +10,36 @@ import json
 
 from .models import SenhaUsuario
 
-# ==================== TELAS ====================
+# ==================== TELAS SIMPLES ====================
 
 def Login(request):
-    return render(request, 'Login.html')
+    return render(request, 'login.html')
 
 def user(request):
-    return render(request, 'samu/user_list.html')
+    return render(request, 'admin_app/user_list.html')
 
 # ==================== LOGIN/LOGOUT ====================
 
 def fazer_login(request):
     if request.method == 'POST':
-        usuario = request.POST['usuario']
-        senha = request.POST['senha']
+        usuario = request.POST.get('usuario')
+        senha = request.POST.get('senha')
         user = authenticate(request, username=usuario, password=senha)
 
         if user is not None:
             login(request, user)
-            return redirect('adm' if user.is_staff else 'inicio')
-        else:
-            messages.error(request, 'Usuário ou senha inválidos.')
-            return redirect('login')
 
-    return render(request, 'Login.html')
+            # se for staff, vai pro painel admin; senão, para o início do usuário
+            if user.is_staff:
+                return redirect('admin_app:adm')
+            else:
+                return redirect('inicio')
+
+        messages.error(request, 'Usuário ou senha inválidos.')
+        return redirect('login')
+
+    return render(request, 'login.html')
+
 
 def sair(request):
     logout(request)
@@ -45,49 +51,63 @@ def sair(request):
 def dashboard_admin(request):
     if not request.user.is_staff:
         return HttpResponseForbidden("Acesso negado")
-    return render(request, 'admin_app/ADM_inicial.html')
+
+    nome_usuario = request.user.get_full_name() or request.user.username
+    return render(request, 'admin_app/dashboard_adm.html', {'usr_name': nome_usuario})
+
 
 @login_required
 def dashboard_usuario(request):
-    return render(request, 'user/inicial.html')
+    nome_usuario = request.user.get_full_name() or request.user.username
+    return render(request, 'user/dashboard_user.html', {'usr_name': nome_usuario})
+
 
 @login_required
 def adm_painel(request):
     nome_usuario = request.user.get_full_name() or request.user.username
-    return render(request, 'admin_app/ADM_inicial.html', {'usr_name': nome_usuario})
+    return render(request, 'admin_app/dashboard_adm.html', {'usr_name': nome_usuario})
+
 
 @login_required
 def inicial_painel(request):
     nome_usuario = request.user.get_full_name() or request.user.username
-    return render(request, 'user/inicial.html', {'usr_name': nome_usuario})
+    return render(request, 'user/dashboard_user.html', {'usr_name': nome_usuario})
+
 
 @login_required
 def adm_inicial(request):
     nome_usuario = request.user.get_full_name() or request.user.username
-    return render(request, 'admin_app/adm_inicial.html', {'usr_name': nome_usuario})
+    return render(request, 'admin_app/dashboard_adm.html', {'usr_name': nome_usuario})
+
 
 @login_required
 def inicial(request):
     nome_usuario = request.user.get_full_name() or request.user.username
-    return render(request, 'user/inicial.html', {'usr_name': nome_usuario})
+    return render(request, 'user/dashboard_user.html', {'usr_name': nome_usuario})
 
 # ==================== USUÁRIOS ====================
 
 @csrf_exempt
+@login_required
 def adicionar_usuario(request):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Acesso negado")
+
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             nome = data.get('nome', '').strip()
             senha = data.get('senha', '').strip()
+
             if not nome or not senha:
                 return JsonResponse({'success': False, 'msg': 'Preencha todos os campos!'}, status=400)
-            
+
             if User.objects.filter(username__iexact=nome).exists():
                 return JsonResponse({'success': False, 'msg': f"O usuário '{nome}' já existe!"}, status=400)
-            user = User.objects.create_user(username=nome, password=senha)
 
+            user = User.objects.create_user(username=nome, password=senha)
             SenhaUsuario.objects.create(usuario=user, senha_plana=senha)
+
             return JsonResponse({'success': True, 'msg': f"Usuário '{nome}' criado com sucesso!"})
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'msg': 'Erro ao interpretar os dados enviados!'}, status=400)
@@ -96,13 +116,18 @@ def adicionar_usuario(request):
 
     return JsonResponse({'success': False, 'msg': 'Método não permitido'}, status=405)
 
+
 @login_required
 def lista_usuarios(request):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Acesso negado")
+
     usuarios = User.objects.filter(is_superuser=False, is_staff=False)
-    for user in usuarios:
-        user.senha_plana = None
+    for u in usuarios:
+        u.senha_plana = None
 
     return render(request, 'admin_app/user_list.html', {'usuarios': usuarios})
+
 
 @login_required
 def excluir_usuario(request, usuario_id):
@@ -111,11 +136,16 @@ def excluir_usuario(request, usuario_id):
 
     usuario = get_object_or_404(User, id=usuario_id)
     usuario.delete()
-    return redirect('lista_usuarios')
+    return redirect('admin_app:lista_usuarios')
+
 
 @require_POST
 @csrf_exempt
+@login_required
 def deletar_usuario(request):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Acesso negado")
+
     data = json.loads(request.body)
     nome = data.get('nome')
 
@@ -124,8 +154,7 @@ def deletar_usuario(request):
         user.delete()
         return JsonResponse({'success': True, 'msg': 'Usuário excluído com sucesso'})
     except User.DoesNotExist:
-        return JsonResponse({'success': False, 'msg': 'Usuário não encontrado'})
-
+        return JsonResponse({'success': False, 'msg': 'Usuário não encontrado'}, status=404)
 
 
 @csrf_exempt

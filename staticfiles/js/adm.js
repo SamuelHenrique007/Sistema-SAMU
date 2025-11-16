@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const nome = document.querySelectorAll('.modal-content input')[0].value.trim();
         const senha = document.querySelectorAll('.modal-content input')[1].value.trim();
 
-        fetch('/adicionar-usuario/', {
+        fetch('/adm/adicionar-usuario/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,13 +1,11 @@
-from django.contrib import admin
+# admin_app/urls.py
 from django.urls import path
 from . import views
-from django.conf import settings
-from django.conf.urls.static import static
+
+app_name = "admin_app"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-
-    path('', views.fazer_login, name='login'),
+    path('login/', views.fazer_login, name='login'),
     path('logout/', views.sair, name='logout'),
 
     path('adicionar-usuario/', views.adicionar_usuario, name='adicionar_usuario'),
@@ -16,9 +14,8 @@ urlpatterns = [
     path('deletar-usuario/', views.deletar_usuario, name='deletar_usuario'),
     path('redefinir-senha/', views.redefinir_senha, name='redefinir_senha'),
 
-    path('dashboard/admin/', views.dashboard_admin, name='dashboard_admin'),
-    path('adm/', views.adm_painel, name='adm'),
-    path('adm/inicial/', views.adm_inicial, name='ADM_inicial'),
+    # painel admin principal: /adm/painel/
+    path('painel/', views.adm_painel, name='adm'),
 
+    path('inicial/', views.adm_inicial, name='adm_inicial'),
 ]
-
