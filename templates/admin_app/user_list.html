@@ -58,19 +58,29 @@
     </div>
 
     <!-- Modal de Redefinir senha -->
-    <div id="modalVerDados" class="modal">
-        <div class="modal-conteudo">
-            <div class="fechar-box">
-                <span class="fechar" onclick="fecharModalVerDados()">&times;</span>
-            </div>
-            <h2>Redefinir Senha:</h2>
+<div id="modalVerDados" class="modal">
+    <div class="modal-conteudo">
+        <span class="fechar" onclick="fecharModalVerDados()">&times;</span>
 
-            <p><strong>Usuário:</strong> <span id="verNome"></span></p>
+        <h2>Redefinir Senha</h2>
 
-            <input type="password" id="redefinirSenha" class="input-modal" placeholder="Redefinir senha:" />
-            <button class="btn-adicionar" onclick="redefinirSenha()">Redefinir</button>
-        </div>
+        <p class="modal-info">
+            <strong>Usuário:</strong> <span id="verNome"></span>
+        </p>
+
+        <input
+            type="password"
+            id="redefinirSenha"
+            class="input-modal"
+            placeholder="Nova senha:"
+        />
+
+        <button class="btn-adicionar" onclick="redefinirSenha()">
+            Redefinir
+        </button>
     </div>
+</div>
+
 
     <!-- JS externo -->
     <script src="{% static 'js/user.js' %}"></script>

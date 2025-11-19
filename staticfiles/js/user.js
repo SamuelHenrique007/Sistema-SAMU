@@ -2,9 +2,11 @@
 
 function abrirModalVerDados(nome) {
     console.log("Abrindo modal de:", nome);
-    console.log(document.getElementById("verNome"));
+
     document.getElementById("verNome").textContent = nome;
-    document.getElementById("modalVerDados").style.display = "block";
+
+    // EXIBIR MODAL CENTRALIZADO (usa FLEX no CSS)
+    document.getElementById("modalVerDados").style.display = "flex";
 }
 
 function fecharModalVerDados() {
@@ -18,6 +20,7 @@ window.onclick = function (event) {
         modal.style.display = "none";
     }
 };
+
 
 // ==================== REDEFINIR SENHA ====================
 
@@ -62,6 +65,7 @@ function redefinirSenha() {
                         title: data.msg,
                         confirmButtonColor: "#4CAF50"
                     });
+
                     if (data.success) {
                         document.getElementById("redefinirSenha").value = "";
                     }
@@ -71,7 +75,7 @@ function redefinirSenha() {
                         icon: "error",
                         title: "Erro na requisição!",
                         text: error,
-                        confirmButtonColor: "#d33"
+                        confirmButtonColor: "rgba(255, 0, 0, 1)"
                     });
                 });
         }
