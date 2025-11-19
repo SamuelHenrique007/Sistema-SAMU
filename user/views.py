@@ -8,6 +8,8 @@ from django.views.decorators.http import require_POST
 from mimetypes import guess_type
 from .forms import ArquivoForm
 from .models import Arquivo
+from django.urls import reverse
+from urllib.parse import urlencode
 
 # ==================== TELAS ====================
 
@@ -119,22 +121,36 @@ def baixar_arquivo(request, id):
     except Arquivo.DoesNotExist:
         raise Http404("Arquivo não encontrado.")
 
+
 @login_required
 @require_POST
 def excluir_arquivo(request, id):
-    arquivo = get_object_or_404(Arquivo, id=id)
-    arquivo.delete()
-
     nome = request.GET.get('nome_paciente', '')
     data = request.GET.get('data_arquivo', '')
 
-    resultados = Arquivo.objects.all()
-    if nome:
-        resultados = resultados.filter(nome_paciente__icontains=nome)
-    if data:
-        resultados = resultados.filter(data_arquivo=data)
+    try:
+        arquivo = Arquivo.objects.get(id=id)
+    except Arquivo.DoesNotExist:
+        arquivo = None
 
-    return render(request, 'user/pesquisa.html', {'resultados': resultados})
+    if arquivo:
+        if arquivo.arquivo:
+            arquivo.arquivo.delete(save=False)
+        arquivo.delete()
+
+    params = {}
+    if nome:
+        params['nome_paciente'] = nome
+    if data:
+        params['data_arquivo'] = data
+
+    url = reverse('pesquisar')
+    if params:
+        url += '?' + urlencode(params)
+
+    return redirect(url)
+
+
 
 
 

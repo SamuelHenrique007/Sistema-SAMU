@@ -22,7 +22,7 @@ window.onload = () => {
 };
 
 // ===============================
-// 🧩 CONTROLE DE MODAIS
+//   CONTROLE DE MODAIS
 // ===============================
 
 function abrirModal() {
@@ -59,7 +59,7 @@ window.onclick = function (event) {
 };
 
 // ===============================
-// 📁 ADICIONAR ARQUIVO (fetch)
+//  ADICIONAR ARQUIVO (fetch)
 // ===============================
 
 async function adicionarArquivo() {
@@ -102,7 +102,7 @@ async function adicionarArquivo() {
 }
 
 // ===============================
-// 📂 ATUALIZA NOME DO ARQUIVO
+//  ATUALIZA NOME DO ARQUIVO
 // ===============================
 document.getElementById("arquivoInput").addEventListener("change", function () {
     const nomeArquivo = this.files.length > 0 ? this.files[0].name : "Nenhum arquivo selecionado";
@@ -110,7 +110,7 @@ document.getElementById("arquivoInput").addEventListener("change", function () {
 });
 
 // ===============================
-// 🔍 PESQUISAR ARQUIVO
+//  PESQUISAR ARQUIVO
 // ===============================
 function pesquisarArquivo() {
     const nome = document.querySelector("#pesquisarNomePaciente").value;
@@ -126,7 +126,7 @@ function pesquisarArquivo() {
 }
 
 // ===============================
-// 💬 MENSAGEM FLUTUANTE
+//  MENSAGEM FLUTUANTE
 // ===============================
 function mostrarMensagem(texto, tipo = 'sucesso') {
     const msgDiv = document.getElementById('mensagem');

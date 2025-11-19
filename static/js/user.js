@@ -45,7 +45,7 @@ function redefinirSenha() {
         cancelButtonColor: "#d33"
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch("/adm/redefinir-senha/", {   // 👈 URL corrigida
+            fetch("/adm/redefinir-senha/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
