@@ -48,6 +48,7 @@ body {
     position: relative;
 }
 
+/* container do Bootstrap + seus estilos */
 .card-container {
     width: 100%;
     display: flex;

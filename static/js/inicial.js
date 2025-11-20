@@ -1,10 +1,21 @@
+// ===============================
+//  SAIR (se quiser usar em outro lugar)
+// ===============================
 function sair() {
     mostrarMensagem("Saindo do sistema...", "sucesso");
 }
 
+// ===============================
+//  CARROSSEL
+// ===============================
 window.onload = () => {
     const track = document.querySelector('.carousel-track');
     const slides = document.querySelectorAll('.carousel-slide');
+
+    if (!track || slides.length === 0) {
+        return;
+    }
+
     let currentIndex = 0;
     const totalSlides = slides.length;
     const slidesPerView = 3;
@@ -26,34 +37,32 @@ window.onload = () => {
 // ===============================
 
 function abrirModal() {
-    document.getElementById("modalAdicionar").style.display = "block";
-
-    // 🔧 Garante que o botão não tenha múltiplos listeners
-    const oldBtn = document.querySelector(".btn-adicionar");
-    const newBtn = oldBtn.cloneNode(true);
-    oldBtn.replaceWith(newBtn);
-
-    // Reatribui o evento ao novo botão
-    newBtn.addEventListener("click", adicionarArquivo);
+    const modal = document.getElementById("modalAdicionar");
+    if (modal) {
+        modal.style.display = "block";
+    }
 }
 
 function abrirModalPesquisar() {
-    document.getElementById("modalPesquisar").style.display = "block";
+    const modal = document.getElementById("modalPesquisar");
+    if (modal) {
+        modal.style.display = "block";
+    }
 }
 
 function fecharModal() {
-    const modais = document.querySelectorAll('.modal');
-    modais.forEach(modal => {
-        modal.style.display = 'none';
+    const modais = document.querySelectorAll(".modal");
+    modais.forEach((modal) => {
+        modal.style.display = "none";
     });
 }
 
 // Fecha modal ao clicar fora dele
 window.onclick = function (event) {
-    const modais = document.querySelectorAll('.modal');
-    modais.forEach(modal => {
+    const modais = document.querySelectorAll(".modal");
+    modais.forEach((modal) => {
         if (event.target === modal) {
-            modal.style.display = 'none';
+            modal.style.display = "none";
         }
     });
 };
@@ -61,15 +70,22 @@ window.onclick = function (event) {
 // ===============================
 //  ADICIONAR ARQUIVO (fetch)
 // ===============================
-
 async function adicionarArquivo() {
     const nomePaciente = document.querySelector("#nomePaciente").value.trim();
     const dataArquivo = document.querySelector("#dataArquivo").value;
     const arquivoInput = document.querySelector("#arquivoInput");
 
-    if (!nomePaciente) return mostrarMensagem("Por favor, preencha o nome do paciente.", "erro");
-    if (!dataArquivo) return mostrarMensagem("Por favor, selecione a data do arquivo.", "erro");
-    if (!arquivoInput.files.length) return mostrarMensagem("Selecione um arquivo.", "erro");
+    if (!nomePaciente) {
+        return mostrarMensagem("Por favor, preencha o nome do paciente.", "erro");
+    }
+
+    if (!dataArquivo) {
+        return mostrarMensagem("Por favor, selecione a data do arquivo.", "erro");
+    }
+
+    if (!arquivoInput.files.length) {
+        return mostrarMensagem("Selecione um arquivo.", "erro");
+    }
 
     const formData = new FormData();
     formData.append("nome_paciente", nomePaciente);
@@ -92,7 +108,10 @@ async function adicionarArquivo() {
             document.querySelector("#nomePaciente").value = "";
             document.querySelector("#dataArquivo").value = "";
             arquivoInput.value = "";
-            document.getElementById("nomeArquivoSelecionado").textContent = "Nenhum arquivo selecionado";
+            const nomeArquivoSpan = document.getElementById("nomeArquivoSelecionado");
+            if (nomeArquivoSpan) {
+                nomeArquivoSpan.textContent = "Nenhum arquivo selecionado";
+            }
         } else {
             mostrarMensagem(result.mensagem || "Erro ao adicionar o arquivo.", "erro");
         }
@@ -104,10 +123,19 @@ async function adicionarArquivo() {
 // ===============================
 //  ATUALIZA NOME DO ARQUIVO
 // ===============================
-document.getElementById("arquivoInput").addEventListener("change", function () {
-    const nomeArquivo = this.files.length > 0 ? this.files[0].name : "Nenhum arquivo selecionado";
-    document.getElementById("nomeArquivoSelecionado").textContent = nomeArquivo;
-});
+const inputArquivo = document.getElementById("arquivoInput");
+if (inputArquivo) {
+    inputArquivo.addEventListener("change", function () {
+        const nomeArquivo =
+            this.files && this.files.length > 0
+                ? this.files[0].name
+                : "Nenhum arquivo selecionado";
+        const spanNome = document.getElementById("nomeArquivoSelecionado");
+        if (spanNome) {
+            spanNome.textContent = nomeArquivo;
+        }
+    });
+}
 
 // ===============================
 //  PESQUISAR ARQUIVO
@@ -118,7 +146,7 @@ function pesquisarArquivo() {
 
     fecharModal();
 
-    let url = '/pesquisar/?';
+    let url = "/pesquisar/?";
     if (nome) url += `nome_paciente=${encodeURIComponent(nome)}&`;
     if (data) url += `data_arquivo=${encodeURIComponent(data)}&`;
 
@@ -128,13 +156,15 @@ function pesquisarArquivo() {
 // ===============================
 //  MENSAGEM FLUTUANTE
 // ===============================
-function mostrarMensagem(texto, tipo = 'sucesso') {
-    const msgDiv = document.getElementById('mensagem');
+function mostrarMensagem(texto, tipo = "sucesso") {
+    const msgDiv = document.getElementById("mensagem");
+    if (!msgDiv) return;
+
     msgDiv.textContent = texto;
-    msgDiv.style.display = 'block';
-    msgDiv.className = tipo === 'sucesso' ? 'mensagem-sucesso' : 'mensagem-erro';
+    msgDiv.style.display = "block";
+    msgDiv.className = tipo === "sucesso" ? "mensagem-sucesso" : "mensagem-erro";
 
     setTimeout(() => {
-        msgDiv.style.display = 'none';
+        msgDiv.style.display = "none";
     }, 4000);
 }

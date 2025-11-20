@@ -3,20 +3,31 @@
 function abrirModalVerDados(nome) {
     console.log("Abrindo modal de:", nome);
 
-    document.getElementById("verNome").textContent = nome;
+    const spanNome = document.getElementById("verNome");
+    const modal = document.getElementById("modalVerDados");
 
-    // EXIBIR MODAL CENTRALIZADO (usa FLEX no CSS)
-    document.getElementById("modalVerDados").style.display = "flex";
+    if (!spanNome || !modal) {
+        console.error("Elemento verNome ou modalVerDados não encontrado no DOM.");
+        return;
+    }
+
+    spanNome.textContent = nome;
+
+    // Exibir modal centralizado (usa flex no CSS)
+    modal.style.display = "flex";
 }
 
 function fecharModalVerDados() {
-    document.getElementById("modalVerDados").style.display = "none";
+    const modal = document.getElementById("modalVerDados");
+    if (modal) {
+        modal.style.display = "none";
+    }
 }
 
 // Fecha o modal ao clicar fora
 window.onclick = function (event) {
     const modal = document.getElementById("modalVerDados");
-    if (event.target === modal) {
+    if (modal && event.target === modal) {
         modal.style.display = "none";
     }
 };
@@ -25,8 +36,16 @@ window.onclick = function (event) {
 // ==================== REDEFINIR SENHA ====================
 
 function redefinirSenha() {
-    const nome = document.getElementById("verNome").textContent;
-    const novaSenha = document.getElementById("redefinirSenha").value.trim();
+    const nomeSpan = document.getElementById("verNome");
+    const inputSenha = document.getElementById("redefinirSenha");
+
+    if (!nomeSpan || !inputSenha) {
+        console.error("Campos do modal não encontrados.");
+        return;
+    }
+
+    const nome = nomeSpan.textContent;
+    const novaSenha = inputSenha.value.trim();
 
     if (novaSenha === "") {
         Swal.fire({
@@ -60,21 +79,31 @@ function redefinirSenha() {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    Swal.fire({
-                        icon: data.success ? "success" : "error",
-                        title: data.msg,
-                        confirmButtonColor: "#4CAF50"
-                    });
-
                     if (data.success) {
-                        document.getElementById("redefinirSenha").value = "";
+                        Swal.fire({
+                            icon: "success",
+                            title: data.msg,
+                            confirmButtonColor: "#4CAF50"
+                        }).then(() => {
+                            // limpa o campo
+                            inputSenha.value = "";
+                            // fecha o modal
+                            fecharModalVerDados();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: data.msg || "Erro ao redefinir senha",
+                            confirmButtonColor: "#4CAF50"
+                        });
                     }
                 })
                 .catch((error) => {
+                    console.error(error);
                     Swal.fire({
                         icon: "error",
                         title: "Erro na requisição!",
-                        text: error,
+                        text: "Tente novamente.",
                         confirmButtonColor: "rgba(255, 0, 0, 1)"
                     });
                 });

@@ -27,14 +27,6 @@ body {
     padding: 5px;
 }
 
-.logo-text {
-    display: flex;
-    flex-direction: column;
-    font-weight: bold;
-    line-height: 1.1;
-    font-size: 18px;
-}
-
 .welcome-text {
     text-align: center;
     font-weight: bold;
@@ -78,6 +70,8 @@ body {
     margin-top: 5px;
 }
 
+/* CARROSSEL */
+
 .carousel {
     position: relative;
     width: 100%;
@@ -97,7 +91,7 @@ body {
 .carousel-slide {
     flex: 0 0 33.3333%;
     box-sizing: border-box;
-    padding: 0 5px
+    padding: 0 5px;
 }
 
 .carousel-slide img {
@@ -106,18 +100,18 @@ body {
     display: block;
 }
 
+/* MODAIS */
+
 .modal {
     display: none;
     position: fixed;
     z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-conteudo {
+    position: relative;
     background-color: white;
     width: 300px;
     padding: 20px;
@@ -129,7 +123,6 @@ body {
     align-items: center;
     margin: 100px auto;
 }
-
 
 .modal-conteudo h2 {
     margin-bottom: 20px;
@@ -145,36 +138,11 @@ body {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-family: 'Inter', sans-serif;
-    left: 0;
 }
 
 .btn-adicionar {
     width: 90%;
     max-width: 260px;
-    padding: 10px;
-    background-color: #f26522;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.upload-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 15px;
-    color: #888;
-}
-
-.upload-icon {
-    width: 40px;
-    margin-bottom: 5px;
-}
-
-.btn-adicionar {
-    width: 100%;
     padding: 10px;
     background-color: #f26522;
     border: none;
@@ -203,22 +171,21 @@ body {
     color: red;
 }
 
-.modal-conteudo {
-    position: relative;
-}
-
-.card-link {
-    text-decoration: none;
-}
-
-.card-link p {
-    text-decoration: none;
-    color: inherit;
-}
+/* UPLOAD */
 
 .upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #888;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 10px;
+}
+
+.upload-icon {
+    width: 40px;
+    margin-bottom: 5px;
 }
 
 .upload-label {
@@ -251,6 +218,15 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
+
+/* LINKS */
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* MENSAGEM FLUTUANTE */
 
 #mensagem {
     position: fixed;

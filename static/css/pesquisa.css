@@ -27,7 +27,8 @@ body {
     padding: 5px;
 }
 
-.container {
+/* era .container, agora .page-container (HTML usa: class="container page-container") */
+.page-container {
     padding: 20px;
 }
 
@@ -53,7 +54,6 @@ h2 {
     color: white;
     padding: 14px 15px;
     text-align: center;
-    /* centraliza os títulos */
     font-weight: bold;
 }
 
@@ -62,7 +62,6 @@ h2 {
     padding: 12px 15px;
     border-bottom: 1px solid #eee;
     text-align: center;
-    /* centraliza os dados e botões */
 }
 
 /* Última linha sem borda */
@@ -70,12 +69,12 @@ h2 {
     border-bottom: none;
 }
 
-/* Efeito hover */
+/* Hover */
 .user-table tbody tr:hover {
     background-color: #fef3eb;
 }
 
-
+/* Botões */
 .download,
 .view-btn,
 .delete-btn {
@@ -88,30 +87,19 @@ h2 {
     font-size: 14px;
 }
 
-.view-btn {
-    background-color: #f26522;
-}
-
-.delete-btn {
-    background-color: #f26522;
-}
-
+.view-btn,
+.delete-btn,
 .download {
     background-color: #f26522;
 }
 
-.view-btn:hover {
-    background-color: #e15510;
-}
-
-.delete-btn:hover {
-    background-color: #e15510;
-}
-
+.view-btn:hover,
+.delete-btn:hover,
 .download:hover {
     background-color: #e15510;
 }
 
+/* Links como botões */
 a.view-btn,
 a.download {
     text-decoration: none !important;

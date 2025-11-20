@@ -6,6 +6,8 @@ body {
 
 .top-bar {
     background-color: #f26522;
+    /* o Bootstrap já coloca flex via classes,
+       mas deixei o seu também para garantir o mesmo visual */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,7 +23,8 @@ body {
     padding: 5px;
 }
 
-.container {
+/* era .container, agora só muda o nome da classe no HTML */
+.page-container {
     padding: 20px;
 }
 
@@ -82,13 +85,7 @@ h2 {
     color: white;
     cursor: pointer;
     font-size: 14px;
-}
-
-.view-btn {
-    background-color: #f26522;
-}
-
-.delete-btn {
+    /* sobrescreve o .btn do Bootstrap */
     background-color: #f26522;
 }
 
@@ -100,14 +97,11 @@ h2 {
 /* === ESTILO DO MODAL === */
 .modal {
     display: none;
-    /* 🔴 IMPORTANTE: começa escondido */
+    /* controlado via JS, não pelo Bootstrap */
     position: fixed;
     z-index: 1000;
     inset: 0;
-    /* top/right/bottom/left: 0 */
     background-color: rgba(0, 0, 0, 0.5);
-
-    /* centralizar o conteúdo quando estiver visível */
     align-items: center;
     justify-content: center;
 }
@@ -137,9 +131,11 @@ h2 {
 }
 
 .input-modal {
-    width: 100%;
+    width: 90%;
+    max-width: 280px;
     padding: 10px 12px;
-    margin-bottom: 16px;
+    margin: 0 auto 16px auto;
+    display: block;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-family: 'Inter', sans-serif;
